@@ -1,0 +1,270 @@
+//! Solana Escrow Engine
+//!
+//! An on‑chain escrow program implementing a secure, two‑party conditional transfer.
+//! This demonstrates how traditional backend escrow logic can be migrated to Solana.
+
+use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::{
+    account_info::{next_account_info, AccountInfo},
+    entrypoint,
+    entrypoint::ProgramResult,
+    msg,
+    program_error::ProgramError,
+    pubkey::Pubkey,
+    system_instruction,
+    sysvar::{clock::Clock, Sysvar},
+};
+
+solana_program::declare_id!("Escrow11111111111111111111111111111111111111");
+
+/// Escrow state stored on‑chain.
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub struct Escrow {
+    /// The party that deposits the funds (maker).
+    pub maker: Pubkey,
+    /// The intended recipient (taker).
+    pub taker: Pubkey,
+    /// Amount of lamports locked in the escrow.
+    pub amount: u64,
+    /// Unix timestamp when the escrow expires (0 = no expiry).
+    pub expiry: i64,
+    /// Whether the maker has approved release.
+    pub maker_approved: bool,
+    /// Whether the taker has approved release.
+    pub taker_approved: bool,
+    /// Whether funds have been released.
+    pub released: bool,
+}
+
+/// Program instructions.
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub enum EscrowInstruction {
+    /// Create a new escrow.
+    ///
+    /// Accounts expected:
+    /// 0. [signer, writable] Maker account (payer of the escrow).
+    /// 1. [writable] Escrow account (PDA derived from maker + seed).
+    /// 2. [] Taker account (recipient).
+    /// 3. [] System program.
+    Create {
+        seed: u64,
+        amount: u64,
+        taker: Pubkey,
+        expiry: i64,
+    },
+    /// Approve release (callable by maker or taker).
+    ///
+    /// Accounts expected:
+    /// 0. [signer] Approver (maker or taker).
+    /// 1. [writable] Escrow account.
+    Approve,
+    /// Release funds to taker if both parties approved or expiry passed.
+    ///
+    /// Accounts expected:
+    /// 0. [signer] Any account (can be anyone, logic is permissionless).
+    /// 1. [writable] Escrow account.
+    /// 2. [writable] Maker account (to refund if expired).
+    /// 3. [writable] Taker account (to receive funds).
+    /// 4. [] System program.
+    Release,
+    /// Cancel escrow before expiry if both parties agree.
+    ///
+    /// Accounts expected:
+    /// 0. [signer] Maker or taker.
+    /// 1. [writable] Escrow account.
+    /// 2. [writable] Maker account (to refund).
+    /// 3. [] System program.
+    Cancel,
+}
+
+/// Generates the PDA address for an escrow account.
+pub fn get_escrow_address(maker: &Pubkey, seed: u64) -> (Pubkey, u8) {
+    Pubkey::find_program_address(
+        &[b"escrow", maker.as_ref(), &seed.to_le_bytes()],
+        &crate::id(),
+    )
+}
+
+/// Deserializes an instruction.
+pub fn unpack_instruction(data: &[u8]) -> Result<EscrowInstruction, ProgramError> {
+    EscrowInstruction::try_from_slice(data).map_err(|_| ProgramError::InvalidInstructionData)
+}
+
+/// Processes the Create instruction.
+fn process_create(
+    accounts: &[AccountInfo],
+    seed: u64,
+    amount: u64,
+    taker: Pubkey,
+    expiry: i64,
+) -> ProgramResult {
+    let account_iter = &mut accounts.iter();
+    let maker = next_account_info(account_iter)?;
+    let escrow = next_account_info(account_iter)?;
+    let taker_acc = next_account_info(account_iter)?;
+    let system_program = next_account_info(account_iter)?;
+
+    // Verify the escrow PDA matches expected address.
+    let (expected_escrow, bump) = get_escrow_address(maker.key, seed);
+    if expected_escrow != *escrow.key {
+        msg!("Invalid escrow PDA");
+        return Err(ProgramError::InvalidArgument);
+    }
+
+    // Verify taker account matches provided pubkey.
+    if *taker_acc.key != taker {
+        msg!("Taker account mismatch");
+        return Err(ProgramError::InvalidArgument);
+    }
+
+    // Ensure escrow account is newly created and has enough lamports.
+    let rent = solana_program::sysvar::rent::Rent::get()?;
+    let required_lamports = rent.minimum_balance(std::mem::size_of::<Escrow>());
+
+    **escrow.try_borrow_mut_lamports()? = required_lamports;
+    **maker.try_borrow_mut_lamports()? -= required_lamports;
+
+    // Transfer the escrow amount from maker to escrow.
+    let ix = system_instruction::transfer(maker.key, escrow.key, amount);
+    solana_program::program::invoke(&ix, &[maker.clone(), escrow.clone(), system_program.clone()])?;
+
+    // Initialize escrow state.
+    let escrow_data = Escrow {
+        maker: *maker.key,
+        taker,
+        amount,
+        expiry,
+        maker_approved: false,
+        taker_approved: false,
+        released: false,
+    };
+    escrow_data.serialize( &mut *escrow.try_borrow_mut_data()?)?;
+
+    msg!("Escrow created: {} lamports locked", amount);
+    Ok(())
+}
+
+/// Processes the Approve instruction.
+fn process_approve(accounts: &[AccountInfo]) -> ProgramResult {
+    let account_iter = &mut accounts.iter();
+    let approver = next_account_info(account_iter)?;
+    let escrow = next_account_info(account_iter)?;
+
+    let mut escrow_data = Escrow::try_from_slice(&escrow.data.borrow())?;
+    if escrow_data.released {
+        msg!("Escrow already released");
+        return Err(ProgramError::InvalidAccountData);
+    }
+
+    if *approver.key == escrow_data.maker {
+        escrow_data.maker_approved = true;
+        msg!("Maker approved");
+    } else if *approver.key == escrow_data.taker {
+        escrow_data.taker_approved = true;
+        msg!("Taker approved");
+    } else {
+        msg!("Approver not part of this escrow");
+        return Err(ProgramError::InvalidArgument);
+    }
+
+    escrow_data.serialize( &mut *escrow.try_borrow_mut_data()?)?;
+    Ok(())
+}
+
+/// Processes the Release instruction.
+fn process_release(accounts: &[AccountInfo]) -> ProgramResult {
+    let account_iter = &mut accounts.iter();
+    let _releaser = next_account_info(account_iter)?;
+    let escrow = next_account_info(account_iter)?;
+    let maker = next_account_info(account_iter)?;
+    let taker = next_account_info(account_iter)?;
+    let system_program = next_account_info(account_iter)?;
+
+    let mut escrow_data = Escrow::try_from_slice(&escrow.data.borrow())?;
+    if escrow_data.released {
+        msg!("Escrow already released");
+        return Err(ProgramError::InvalidAccountData);
+    }
+
+    let clock = Clock::get()?;
+    let expired = escrow_data.expiry > 0 && clock.unix_timestamp >= escrow_data.expiry;
+
+    // Release conditions: both approved OR expired.
+    if !(escrow_data.maker_approved && escrow_data.taker_approved) && !expired {
+        msg!("Release conditions not met");
+        return Err(ProgramError::InvalidArgument);
+    }
+
+    // Transfer locked amount to taker (or back to maker if expired).
+    let recipient = if expired { maker } else { taker };
+    let ix = system_instruction::transfer(escrow.key, recipient.key, escrow_data.amount);
+    solana_program::program::invoke(&ix, &[escrow.clone(), recipient.clone(), system_program.clone()])?;
+
+    // Mark as released.
+    escrow_data.released = true;
+    escrow_data.serialize( &mut *escrow.try_borrow_mut_data()?)?;
+
+    msg!("Escrow released to {}", recipient.key);
+    Ok(())
+}
+
+/// Processes the Cancel instruction.
+fn process_cancel(accounts: &[AccountInfo]) -> ProgramResult {
+    let account_iter = &mut accounts.iter();
+    let canceller = next_account_info(account_iter)?;
+    let escrow = next_account_info(account_iter)?;
+    let maker = next_account_info(account_iter)?;
+    let system_program = next_account_info(account_iter)?;
+
+    let escrow_data = Escrow::try_from_slice(&escrow.data.borrow())?;
+    if escrow_data.released {
+        msg!("Escrow already released");
+        return Err(ProgramError::InvalidAccountData);
+    }
+
+    // Only maker or taker can cancel, and both must agree (both approved).
+    if *canceller.key != escrow_data.maker && *canceller.key != escrow_data.taker {
+        msg!("Canceller not part of this escrow");
+        return Err(ProgramError::InvalidArgument);
+    }
+    if !escrow_data.maker_approved || !escrow_data.taker_approved {
+        msg!("Both parties must approve cancellation");
+        return Err(ProgramError::InvalidArgument);
+    }
+
+    // Refund locked amount to maker.
+    let ix = system_instruction::transfer(escrow.key, maker.key, escrow_data.amount);
+    solana_program::program::invoke(&ix, &[escrow.clone(), maker.clone(), system_program.clone()])?;
+
+    msg!("Escrow cancelled, funds returned to maker");
+    Ok(())
+}
+
+/// Main program entrypoint.
+pub fn process_instruction(
+    program_id: &Pubkey,
+    accounts: &[AccountInfo],
+    instruction_data: &[u8],
+) -> ProgramResult {
+    msg!("Escrow engine v1.0");
+
+    // Ensure we're the right program.
+    if crate::id() != *program_id {
+        return Err(ProgramError::IncorrectProgramId);
+    }
+
+    match unpack_instruction(instruction_data)? {
+        EscrowInstruction::Create {
+            seed,
+            amount,
+            taker,
+            expiry,
+        } => process_create(accounts, seed, amount, taker, expiry),
+        EscrowInstruction::Approve => process_approve(accounts),
+        EscrowInstruction::Release => process_release(accounts),
+        EscrowInstruction::Cancel => process_cancel(accounts),
+    }
+}
+
+// Solana entrypoint macro.
+entrypoint!(process_instruction);
