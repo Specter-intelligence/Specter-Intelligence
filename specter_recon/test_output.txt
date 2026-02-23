@@ -1,0 +1,15 @@
+[*] Starting recon: scanme.nmap.org
+[*] Enumerating subdomains...
+[*] Found 2 unique subdomains
+[*] Verifying live hosts...
+  [+] scanme.nmap.org:80
+[*] 1 live endpoints
+[*] Scanning common ports...
+  [+] scanme.nmap.org:22
+  [+] scanme.nmap.org:80
+[*] Report: recon_scanme.nmap.org_20260220/report.json
+[*] Subdomains: 2
+[*] Live hosts: 1
+[*] Open ports: 2
+
+[+] Complete. Results in: recon_scanme.nmap.org_20260220

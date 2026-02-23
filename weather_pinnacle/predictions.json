@@ -1,0 +1,112 @@
+[
+  {
+    "timestamp": "2026-02-19T21:49:43.318901",
+    "city": "new_york",
+    "noaa_probability": 0.02,
+    "event": "unknown",
+    "market_price": 0.65,
+    "edge": 0.63,
+    "outcome": null,
+    "verified": false
+  },
+  {
+    "timestamp": "2026-02-19T21:49:43.319074",
+    "city": "los_angeles",
+    "noaa_probability": 1.0,
+    "event": "unknown",
+    "market_price": 0.65,
+    "edge": 0.35,
+    "outcome": null,
+    "verified": false
+  },
+  {
+    "timestamp": "2026-02-19T21:49:43.319210",
+    "city": "houston",
+    "noaa_probability": 0.11,
+    "event": "unknown",
+    "market_price": 0.65,
+    "edge": 0.54,
+    "outcome": null,
+    "verified": false
+  },
+  {
+    "timestamp": "2026-02-19T21:49:43.320919",
+    "city": "phoenix",
+    "noaa_probability": 0.05,
+    "event": "unknown",
+    "market_price": 0.65,
+    "edge": 0.6,
+    "outcome": null,
+    "verified": false
+  },
+  {
+    "timestamp": "2026-02-19T21:49:43.322221",
+    "city": "philadelphia",
+    "noaa_probability": 0.3,
+    "event": "unknown",
+    "market_price": 0.65,
+    "edge": 0.35000000000000003,
+    "outcome": null,
+    "verified": false
+  },
+  {
+    "timestamp": "2026-02-19T21:49:43.323311",
+    "city": "san_antonio",
+    "noaa_probability": 0.03,
+    "event": "unknown",
+    "market_price": 0.65,
+    "edge": 0.62,
+    "outcome": null,
+    "verified": false
+  },
+  {
+    "timestamp": "2026-02-19T21:49:43.324415",
+    "city": "san_diego",
+    "noaa_probability": 0.9,
+    "event": "unknown",
+    "market_price": 0.65,
+    "edge": 0.25,
+    "outcome": null,
+    "verified": false
+  },
+  {
+    "timestamp": "2026-02-19T21:49:43.325429",
+    "city": "dallas",
+    "noaa_probability": 0.07,
+    "event": "unknown",
+    "market_price": 0.65,
+    "edge": 0.5800000000000001,
+    "outcome": null,
+    "verified": false
+  },
+  {
+    "timestamp": "2026-02-19T21:49:43.326606",
+    "city": "san_jose",
+    "noaa_probability": 0.39,
+    "event": "unknown",
+    "market_price": 0.65,
+    "edge": 0.26,
+    "outcome": null,
+    "verified": false
+  },
+  {
+    "timestamp": "2026-02-21T06:17:12.029915",
+    "city": "new_york",
+    "noaa_probability": 0.21,
+    "event": "Slight Chance Light Rain then Areas Of Fog",
+    "market_price": 0,
+    "edge": 0.21,
+    "outcome": null,
+    "verified": false
+  },
+  {
+    "timestamp": "2026-02-21T06:18:26.377240",
+    "city": "new_york",
+    "noaa_probability": 0.21,
+    "event": "Slight Chance Light Rain then Areas Of Fog",
+    "market_price": 0,
+    "edge": 0.21,
+    "outcome": null,
+    "verified": false
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "active": null,
+  "queue": [],
+  "completed": [],
+  "blocked": [],
+  "rules": {
+    "maxActive": 1,
+    "switchCost": "Must document blocker + set reminder",
+    "definitionOfDone": "Submitted/merged/claimed — not 'ready'",
+    "dailyCheck": "Read yesterday's memory before new work"
+  },
+  "current": {
+    "task": null,
+    "startedAt": null,
+    "blocker": null,
+    "nextAction": null
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "target": "scanme.nmap.org",
+  "timestamp": "2026-02-20T04:53:15.913213",
+  "subdomains": [
+    "scanme.nmap.org",
+    "www.scanme.nmap.org"
+  ],
+  "live_hosts": [
+    {
+      "host": "scanme.nmap.org",
+      "port": 80,
+      "protocol": "http"
+    }
+  ],
+  "open_ports": [
+    {
+      "host": "scanme.nmap.org",
+      "port": 22
+    },
+    {
+      "host": "scanme.nmap.org",
+      "port": 80
+    }
+  ],
+  "technologies": [],
+  "vulnerabilities": []
+}

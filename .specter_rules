@@ -1,0 +1,30 @@
+# SPECTER OPERATING RULES — Violate These, Fail
+
+## Rule 1: Atomic Tasks
+- ONE active task at a time
+- Before new task: finish, block, or kill current
+- Task switch requires: blocker documented + reminder set
+
+## Rule 2: Done Means Done
+- NOT: "researched", "found", "ready to submit"
+- YES: "submitted", "merged", "claimed", "confirmed received"
+- Final check: URL/tx hash/receipt in hand
+
+## Rule 3: Write Before Think
+- Memory file FIRST, then action
+- End of day: append TASKS_DONE to memory/YYYY-MM-DD.md
+- No "mental notes" — they don't survive restart
+
+## Rule 4: Config Paranoia
+- Edit config → backup first (`cp openclaw.json openclaw.json.bak`)
+- Validate JSON after edit (`jq . openclaw.json`)
+- Test one change at a time
+
+## Rule 5: Verification Required
+- "Works" means: tested output, exit code 0, sample verified
+- Don't assume. Don't trust. Check.
+
+## Enforced By
+- Check TASKS.json before any multi-step work
+- Log all blocker decisions to memory/YYYY-MM-DD.md
+- Self-audit: daily review of completed vs claimed

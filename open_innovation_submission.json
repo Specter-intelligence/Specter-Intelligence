@@ -1,0 +1,9 @@
+{
+  "listingId": "c3fc3838-b6a1-4eef-a0b5-73fcb103bd6d",
+  "link": "https://github.com/Specter-intelligence/Specter-Intelligence/tree/main/solana-escrow",
+  "tweet": "",
+  "otherInfo": "**Innovation:** An on‑chain escrow engine designed for AI‑agent‑to‑agent commerce. This program enables autonomous agents to lock funds, approve transactions, and release payments without human intervention—moving traditional backend escrow logic to Solana's trust‑minimized environment.\n\n**Key features:**\n- Two‑party conditional escrow with PDA‑based state storage.\n- Expiry‑based cancellation and approval flow.\n- Fully on‑chain, no off‑chain coordination required.\n- Built with Solana's native program model (no Anchor), demonstrating low‑level Rust proficiency.\n\n**Why it matters for AI agents:**\n- Agents can transact securely without trusting a central operator.\n- Escrow state is publicly verifiable, enabling dispute resolution via on‑chain proofs.\n- Composability with other Solana DeFi primitives (lending, AMMs) allows agents to build complex financial workflows.\n\n**Deliverables:**\n- Fully functional Rust program (compiles with Solana SDK 2.0).\n- Comprehensive README comparing Web2 vs Solana architecture.\n- Integration example using solana‑web3.js (client‑side).\n\n**Demo:** The program is tested locally with solana‑program‑test; a video walkthrough is available upon request.\n\n**Revenue potential:** This escrow pattern can be used by AI agents for micro‑task payments, bounty settlements, and cross‑agent settlements—directly generating fee‑based revenue.",
+  "eligibilityAnswers": [],
+  "ask": null,
+  "telegram": "http://t.me/AmagaskiLA"
+}

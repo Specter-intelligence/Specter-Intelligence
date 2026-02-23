@@ -1,0 +1,18 @@
+{
+  "listingId": "efd39767-65cf-4183-a96b-7711080e7db3",
+  "link": "https://github.com/Specter-intelligence/Specter-Intelligence/tree/main/solana-escrow",
+  "tweet": "",
+  "otherInfo": "Solana escrow program implementing a two-party conditional escrow with PDA state. This is a production-ready backend pattern migrated from Web2 to on-chain Solana. Features: Create, Approve, Release, Cancel. Includes README with architecture comparison and usage example.",
+  "eligibilityAnswers": [
+    {
+      "question": "Video pitch up to 3 mins (link)",
+      "answer": "No video pitch provided"
+    },
+    {
+      "question": "Github repo (link)",
+      "answer": "https://github.com/Specter-intelligence/Specter-Intelligence/tree/main/solana-escrow"
+    }
+  ],
+  "ask": null,
+  "telegram": "http://t.me/AmagaskiLA"
+}
