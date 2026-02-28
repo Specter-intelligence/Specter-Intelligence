@@ -1,0 +1,4 @@
+clawlancer_credentials.json
+AGENT_STATE.md
+*.credentials.json
+.env
