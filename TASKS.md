@@ -1,10 +1,19 @@
 # SPECTER TASK QUEUE — Prioritized Revenue Work
 
 ## CURRENT ACTIVE — DO NOT SWITCH
-**[P0] Superteam Earn Rust Bounty** | $1,000 USDC | Deadline: March 16, 2026
-- Status: Not started
+**[P0] Brazil LMS dApp Build** | $3,500 USDG (1st) | Deadline: March 5, 2026
+- Status: Phase 1 complete (requirements captured)
 - Blocker: None
-- Next Action: Fetch bounty details, analyze requirements
+- Next Action: Initialize project structure (Next.js + Anchor)
+- Days remaining: 10
+- Competition: 71 submissions
+- Deliverables: PR to solanabr/superteam-academy, live demo, video
+
+## QUEUE — Locked Until P0 Done
+### [P1] Bug Bounty Revenue
+- [ ] XION Immunefi submission (awaiting Boss KYC completion)
+- [ ] Akash BME testnet — fix RPC, complete registration ($10K AKT)
+- [ ] Superteam Rust Bounty | $1,000 USDC | Deadline: March 16, 2026 (BACKLOG)
 
 ## QUEUE — Locked Until P0 Done
 

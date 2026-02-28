@@ -47,3 +47,36 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ### Active Sub-Agents
 - **SyndicateSpecter:** Professional betting-syndicate level football analysis.
+
+---
+
+## Scraping Tools
+
+### Scrapling
+**Type:** Python web scraping framework
+**Location:** `~/.local/venv-scrapling/bin/python -m scrapling`
+**Installed:** 2026-02-23 v0.4
+
+**Quick Use:**
+```bash
+# Activate venv
+source ~/.local/venv-scrapling/bin/activate
+
+# Basic fetch
+python -c "from scrapling.fetchers import StealthyFetcher; StealthyFetcher.adaptive = True; page = StealthyFetcher.fetch('https://example.com'); print(page.css('.product'))"
+```
+
+**Key Features:**
+- **StealthyFetcher:** Bypasses Cloudflare Turnstile out-of-box
+- **Adaptive Parser:** Auto-relocates elements when sites change design
+- **Spiders:** Full crawling framework (Scrapy-like API)
+- **MCP Server:** AI-assisted scraping for Claude/Cursor
+- **Proxy Rotation:** Built-in with custom strategies
+
+**Use Cases:**
+- Bypassing bot detection on bounty platforms
+- Scraping Superteam/Earn listings
+- Crawling tables/data for market research
+- AI-assisted data extraction
+
+**Docs:** https://scrapling.readthedocs.io

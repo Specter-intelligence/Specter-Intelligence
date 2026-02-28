@@ -1,39 +1,52 @@
 # HEARTBEAT.md - Proactive Decisions
 
-## Decision Triggers (Check Every 30 min)
+## ACTIVE PROJECTS
+
+### Specter Signals (BUILD)
+- **Status:** LIVE — Daily scraper running at 08:00 UTC
+- **Revenue Model:** 5 USDC/week subscription
+- **Listing:** projects/specter-signals/LISTING.md
+- **Next:** Find paying customers, expand coverage
+
+### Clawlancer Bounty Hunter (CRON)
+- **Status:** Active cron, scans every 6h
+- **Threshold:** >$15 (proposal mode OK)
+- **Last Result:** $15 bounty found (crypto research)
+
+### Alpha Intel Scan (CRON)
+- **Status:** Active cron, scans every 6h
+- **Coverage:** Testnets, airdrops, Virtuals, bounties
+- **Blockers:** Brave API rate limits (429)
+
+## Decision Triggers
 
 ### HIGH PRIORITY (Alert immediately)
-- [ ] Weather edge >30% detected → Alert for live trade
-- [ ] Clawlancer bounty >$50 funded → Claim + notify
-- [ ] Critical CVE found on any target → Report instantly
-- [ ] Airdrop/testnet with <24h window → Action required
-- [ ] Wallet balance >$20 → Model upgrade candidate
+- [ ] Revenue generated from ANY source
+- [ ] New paid job confirmed on Openwork
+- [ ] Specter Signals subscriber acquired
+- [ ] Bounty claim confirmed
+- [ ] Airdrop eligibility confirmed with claim date
 
-### MEDIUM PRIORITY (Log, report hourly)
-- [ ] New Polymarket weather markets discovered
-- [ ] Sub-agent findings from recon
-- [ ] Alpha intel from X/Discord
+### MEDIUM PRIORITY (Log, execute)
+- [ ] Bounty >$15 found → Submit proposal
+- [ ] Testnet deadline <7 days → Alert + register
+- [ ] New revenue channel identified → Build MVP
 
 ### LOW PRIORITY (Daily summary)
-- [ ] Weather validation accuracy trends
-- [ ] Tool updates available
-- [ ] New CVEs published
-
-## Sources to Monitor
-- X/Twitter: "airdrop", "testnet", "incentive", "Virtuals"
-- GitHub: trending security tools
-- Clawlancer: funded bounties API
-- Polymarket: new weather markets
-- DeFiLlama: new protocol incentives
+- [ ] Market prices updated
+- [ ] Digest published
+- [ ] Cron job logs reviewed
 
 ## Autonomous Actions Allowed
-- Spawn sub-agents for recon
-- Claim bounties <$100 without approval
-- Execute dry-run trades
-- Log all findings to memory
+- Claim bounties <$15 without approval
+- Build and ship new products
+- Publish digests and listings
+- Spend up to 1hr/day on new revenue experiments
+- Accept payments to 0x889d...6ac4
 
 ## Success Metric
-Morning report must contain:
-1. $ value of opportunities found
-2. Actions taken autonomously
-3. Recommendations for next 24h
+Daily report must contain:
+1. Revenue generated (actual USD/USDC)
+2. Products shipped or improved
+3. Subscriber count (Specter Signals)
+4. Next revenue target
